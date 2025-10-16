@@ -1,0 +1,14 @@
+{
+  "name": "@monorepo/contract",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "check-types": "tsc --noEmit"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  }
+}

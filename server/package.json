@@ -1,0 +1,23 @@
+{
+  "name": "@monorepo/server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.ts",
+    "check-types": "tsc --noEmit",
+    "preview": "node src/index.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.5",
+    "@libsql/client": "^0.15.15",
+    "@monorepo/contract": "workspace:*",
+    "better-auth": "^1.3.27",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.6",
+    "hono": "^4.9.12"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.5"
+  }
+}

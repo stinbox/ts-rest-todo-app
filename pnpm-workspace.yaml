@@ -2,3 +2,6 @@ packages:
   - "server"
   - "client"
   - "contract"
+
+catalog:
+  "better-auth": 1.3.27

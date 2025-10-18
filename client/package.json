@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@monorepo/contract": "workspace:*",
+    "@ts-rest/core": "catalog:",
     "daisyui": "^5.3.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

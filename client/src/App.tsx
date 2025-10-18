@@ -1,4 +1,5 @@
 import { LoginForm } from "./components/login-form";
+import { TSRestTest } from "./components/ts-rest-test";
 import { authClient } from "./lib/auth-client";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
       >
         Sign Out
       </button>
+      <TSRestTest />
     </div>
   );
 }

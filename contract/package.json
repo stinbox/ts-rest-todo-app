@@ -10,5 +10,9 @@
   },
   "exports": {
     ".": "./dist/index.js"
+  },
+  "dependencies": {
+    "@ts-rest/core": "catalog:",
+    "zod": "^4.1.12"
   }
 }

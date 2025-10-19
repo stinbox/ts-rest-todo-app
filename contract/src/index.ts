@@ -1,21 +1,64 @@
 import { initContract } from "@ts-rest/core";
-import { z } from "zod";
+import { TodoSchema } from "./models/todo.js";
+import * as z from "zod";
 
 const c = initContract();
 
 export const contract = c.router(
   {
-    greeting: {
+    listTodos: {
       method: "GET",
-      path: "/greeting",
-      query: z.object({
-        name: z.string(),
+      path: "/todos",
+      responses: {
+        200: TodoSchema.array(),
+      },
+      summary: "Get all todos",
+    },
+    createTodo: {
+      method: "POST",
+      path: "/todos",
+      body: z.object({
+        content: z.string().min(1).max(255),
       }),
       responses: {
-        200: z.object({ message: z.string() }),
+        201: TodoSchema,
       },
-      summary: "Greet by name",
+      summary: "Create a new todo",
+    },
+    updateTodo: {
+      method: "PUT",
+      path: "/todos/:id",
+      pathParams: z.object({
+        id: z.uuid(),
+      }),
+      body: z
+        .object({
+          content: z.string().min(1).max(255).optional(),
+          completed: z.boolean().optional(),
+        })
+        .refine((data) => data.content != null || data.completed != null, {
+          error: "At least one of 'content' or 'completed' must be provided",
+        }),
+      responses: {
+        200: TodoSchema,
+        404: z.object({ message: z.string() }),
+      },
+    },
+    deleteTodo: {
+      method: "DELETE",
+      path: "/todos/:id",
+      pathParams: z.object({
+        id: z.uuid(),
+      }),
+      responses: {
+        204: c.noBody(),
+      },
     },
   },
-  { pathPrefix: "/api" },
+  {
+    pathPrefix: "/api",
+    commonResponses: {
+      401: z.object({ message: z.string() }),
+    },
+  },
 );

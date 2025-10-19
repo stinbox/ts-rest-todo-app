@@ -1,4 +1,5 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { relations } from "drizzle-orm";
+import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 const createdAt = integer("created_at", { mode: "timestamp_ms" })
   .$defaultFn(() => new Date())
@@ -24,6 +25,10 @@ export const user = sqliteTable("user", {
   createdAt,
   updatedAt,
 });
+
+export const userRelations = relations(user, ({ many }) => ({
+  todos: many(todo),
+}));
 
 export const session = sqliteTable("session", {
   id: text("id").primaryKey(),
@@ -69,3 +74,29 @@ export const verification = sqliteTable("verification", {
   createdAt,
   updatedAt,
 });
+
+export const todo = sqliteTable(
+  "todo",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    content: text("content").notNull(),
+    completed: integer("completed", { mode: "boolean" })
+      .notNull()
+      .default(false),
+    createdAt,
+    updatedAt,
+    createdBy: text("created_by")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+  },
+  (t) => [index("idx_todo_created_by").on(t.createdBy)],
+);
+
+export const todoRelations = relations(todo, ({ one }) => ({
+  creator: one(user, {
+    fields: [todo.createdBy],
+    references: [user.id],
+  }),
+}));

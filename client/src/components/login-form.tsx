@@ -25,7 +25,6 @@ export const LoginForm: React.FC = () => {
     const otpInput = form.elements.namedItem("otp") as HTMLInputElement;
     const otp = otpInput.value;
     await authClient.signIn.emailOtp({ email, otp });
-    // Here you would typically call your authClient to verify the OTP
   };
 
   return (

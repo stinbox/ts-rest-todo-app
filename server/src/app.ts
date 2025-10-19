@@ -2,16 +2,8 @@ import { Hono } from "hono";
 import { logger } from "hono/logger";
 import { auth } from "./auth.ts";
 import { contract } from "@monorepo/contract";
-import { fetchRequestHandler, tsr } from "@ts-rest/serverless/fetch";
-
-const tsrRouter = tsr.router(contract, {
-  greeting: async ({ query: { name } }) => {
-    return {
-      status: 200,
-      body: { message: `Hello, ${name}!` },
-    };
-  },
-});
+import { fetchRequestHandler } from "@ts-rest/serverless/fetch";
+import { tsRestRouter } from "./ts-rest.ts";
 
 export const app = new Hono()
 
@@ -21,11 +13,20 @@ export const app = new Hono()
     return auth.handler(c.req.raw);
   })
 
-  .all("/api/*", (c) =>
-    fetchRequestHandler({
-      router: tsrRouter,
+  .all("/api/*", async (c) => {
+    const session = await auth.api.getSession({
+      headers: c.req.raw.headers,
+    });
+
+    if (!session) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+
+    return fetchRequestHandler({
+      router: tsRestRouter,
       contract,
       request: new Request(c.req.raw),
+      platformContext: { session: session.session },
       options: {},
-    }),
-  );
+    });
+  });
